@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Like Post App</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+</head>
+<body>
+  <div class = "display-3 color-red"><center> Learning ajax<br>Post APP</center></div>
+
+  {% for post in posts %}
+    <div class = 'container jumbotron'>
+      <h3 class="display-5">{{ forloop.counter }}. {{ post.post_heading }}</h3>
+        <p class="lead">{{ post.post_text }} </p>
+      <p>
+        <div type="text/css" class = "container">Author : {{ post.post_author }}</div>
+        {% if post.likes.count > 0 %}
+          <a class="likebutton btn btn-success btn-lg"
+          id="like{{ post.id }}" href="#" data-catid="{{ post.id }}">
+          Liked</a>
+        {% else %}
+          <a class="likebutton btn btn-primary btn-lg"
+          id="like{{ post.id }}" href="#" data-catid="{{ post.id }}">
+          Like</a>
+        {% endif %}
+      </p>
+
+      <p id="message{{post.id}}"> </p>
+</div>
+
+{% endfor %}
+
+<script type="text/javascript">
+  $('.likebutton').click(function(event){
+  var id;
+  event.preventDefault();
+  id = $(this).attr("data-catid");
+  $.ajax(
+  {
+      type:"GET",
+      url: "like",
+      data:{
+        post_id: id
+  },
+  success: function( response)
+  {
+      if (response == "success"){
+        $( '#like'+ id ).removeClass('btn btn-primary btn-lg');
+        $( '#like'+ id ).addClass('btn btn-success btn-lg');
+        var button = document.getElementById('like'+ id );
+        button.innerText = "Liked";
+        // location.reload();
+      }
+      else{
+      $( '#like'+ id ).removeClass('btn btn-success btn-lg');
+      $( '#like'+ id ).addClass('btn btn-primary btn-lg');
+      var button = document.getElementById('like'+ id );
+      button.innerText = "Like";
+      // location.reload();
+    }
+  }
+
+  // unsuccess: function( data )
+  // {
+      // $( '#like'+ id ).removeClass('btn btn-success btn-lg');
+      // $( '#like'+ id ).addClass('btn btn-primary btn-lg');
+      // var button = document.getElementById('like'+ id );
+      // button.innerText = "Liked";
+  // }
+
+  })
+});
+</script>
+</body>
+</html>
